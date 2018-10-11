@@ -18,7 +18,7 @@ cache = caches['default']
 
 
 def validate_url(url):
-    logger.debug('Validating url: {0}'.format(url))
+    # logger.debug('Validating url: {0}'.format(url))
     try:
         parsed = urlparse(url)
         return parsed.scheme in ('http', 'https')
@@ -30,10 +30,10 @@ def validate_url(url):
 def is_html_url(url):
     cache_key = 'is_html({0})'.format(url)
     try:
-        logger.debug('Validating html type for url: {0}'.format(url))
+        # logger.debug('Validating html type for url: {0}'.format(url))
         cached_response = cache.get(cache_key)
         if cached_response is not None:
-            logger.debug('Cache hit')
+            logger.debug('Html url - Cache hit')
             return cached_response
 
         response = requests.head(url)
@@ -50,7 +50,7 @@ def is_html_url(url):
         return False
 
     except:
-        logger.debug('Could not validate html type for url: {0}'.format(url))
+        # logger.debug('Could not validate html type for url: {0}'.format(url))
         cache.set(cache_key, False)
         return False
 
@@ -58,10 +58,10 @@ def is_html_url(url):
 def is_image_url(url):
     cache_key = 'is_image({0})'.format(url)
     try:
-        logger.debug('Validating image type for url: {0}'.format(url))
+        # logger.debug('Validating image type for url: {0}'.format(url))
         cached_response = cache.get(cache_key)
         if cached_response is not None:
-            logger.debug('Cache hit')
+            logger.debug('Image url - Cache hit')
             return cached_response
 
         response = requests.head(url)
@@ -77,7 +77,7 @@ def is_image_url(url):
         return False
 
     except:
-        logger.debug('Could not validate image type for url: {0}'.format(url))
+        # logger.debug('Could not validate image type for url: {0}'.format(url))
         cache.set(cache_key, False)
         return False
 
@@ -149,6 +149,7 @@ class Crawler(object):
         self.visited_urls = set([])
         self.images = set([])
         self.href_queue = queue.Queue()
+        self.href_queue.put((0, self.url))
 
     def extract_tags(self, html, url=''):
         logger.debug('Parsing HTML')
@@ -165,7 +166,7 @@ class Crawler(object):
             logger.debug('Extracting tags - Cache hit')
             return cached_response
 
-        logger.debug('Getting tag data for url {0}'.format(url))
+        # logger.debug('Getting tag data for url {0}'.format(url))
         response = requests.get(url)
         extracted_tags = self.extract_tags(response.text, url)
         cache.set(cache_key, extracted_tags)
@@ -216,7 +217,6 @@ class Crawler(object):
     #             hyperlink = html_tag.get('href', '')
     #             if hyperlink not in self.visited_urls:
     #                 self.href_queue.put((depth + 1, hyperlink))
-
 
     # def crawl(self):
     #     while not self.href_queue.empty():
