@@ -42,7 +42,7 @@ def is_html_url(url):
         if match:
             matchdict = match.groupdict()
             is_html = (matchdict['type'] == 'text' and
-                        matchdict['sub_type'] == 'html')
+                       matchdict['sub_type'] == 'html')
             cache.set(cache_key, is_html)
             return is_html
 
@@ -109,6 +109,9 @@ class TagExtractor(HTMLParser):
         }
         super(TagExtractor, self).__init__(*args, **kwargs)
 
+    # def feed(self, data):
+    #     return super().feed(data)
+
     def clean_attrs(self, attrs):
         attrs = dict(attrs)
         cleaned_attrs = {}
@@ -156,9 +159,17 @@ class Crawler(object):
         return extractor.parsed_data
 
     def tag_data(self, url):
+        cache_key = 'tag_extract({0})'.format(url)
+        cached_response = cache.get(cache_key)
+        if cached_response is not None:
+            logger.debug('Extracting tags - Cache hit')
+            return cached_response
+
         logger.debug('Getting tag data for url {0}'.format(url))
         response = requests.get(url)
-        return self.extract_tags(response.text, url)
+        extracted_tags = self.extract_tags(response.text, url)
+        cache.set(cache_key, extracted_tags)
+        return extracted_tags
 
     def crawl(self, url=None, depth=0):
         logger.debug('depth: {0}, self.depth: {1}'.format(depth, self.depth))
