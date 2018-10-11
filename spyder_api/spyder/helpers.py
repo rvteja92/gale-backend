@@ -173,30 +173,6 @@ class Crawler(object):
         cache.set(cache_key, extracted_tags)
         return extracted_tags
 
-    # def crawl(self, url=None, depth=0):
-    #     logger.debug('depth: {0}, self.depth: {1}'.format(depth, self.depth))
-    #     if depth > self.depth:
-    #         return list(self.images)
-
-    #     if url is None:
-    #         url = self.url
-
-    #     if is_html_url(url):
-    #         tag_data = self.tag_data(url)
-    #         # TODO: Store tag_data data to database
-
-    #         for img_tag in tag_data.get('img', []):
-    #             if is_image_url(img_tag['src']):
-    #                 self.images.add(img_tag['src'])
-
-    #         self.visited_urls.add(url)
-    #         for html_tag in tag_data.get('a', []):
-    #             hyperlink = html_tag.get('href', '')
-    #             if hyperlink not in self.visited_urls:
-    #                 self.crawl(hyperlink, depth + 1)
-
-    #     return list(self.images)
-
     def _crawl(self, page, url=None, depth=0):
         logger.debug('depth: {0}, self.depth: {1}'.format(depth, self.depth))
         if depth > self.depth:
