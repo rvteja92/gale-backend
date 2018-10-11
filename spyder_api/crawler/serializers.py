@@ -32,6 +32,7 @@ class EntrySerializer(serializers.ModelSerializer):
 class UrlRequestSerializer(serializers.Serializer):
     url = serializers.URLField()
     depth = serializers.IntegerField(max_value=10, min_value=0)
+    page = serializers.IntegerField(min_value=1)
 
     def validate_url(self, value):
         parsed = urlparse(value)

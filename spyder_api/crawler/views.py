@@ -16,13 +16,14 @@ class CrawlView(APIView):
         if serailizer.is_valid():
             requested_url = serailizer.data['url']
             crawler = Crawler(requested_url, serailizer.data['depth'])
+            page = serailizer.data['page']
+            images = crawler.crawl(page)
 
-            # entry = Entry.objects.get_or_create(url=requested_url)[0]
-            # entry.crawl(serailizer.html, serailizer.data['depth'])
             return Response({
                 'status': 'success',
                 # 'data':  ImageDataSerializer(entry).data
-                'images': crawler.crawl()
+                'images': images,
+                'complete': crawler.image_count < (page * 20)
             })
 
         else:

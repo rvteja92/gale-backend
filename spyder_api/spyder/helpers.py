@@ -148,6 +148,7 @@ class Crawler(object):
         self.depth = depth
         self.visited_urls = set([])
         self.images = set([])
+        self.image_count = 0
         self.href_queue = queue.Queue()
         self.href_queue.put((0, self.url))
 
@@ -172,34 +173,10 @@ class Crawler(object):
         cache.set(cache_key, extracted_tags)
         return extracted_tags
 
-    def crawl(self, url=None, depth=0):
-        logger.debug('depth: {0}, self.depth: {1}'.format(depth, self.depth))
-        if depth > self.depth:
-            return list(self.images)
-
-        if url is None:
-            url = self.url
-
-        if is_html_url(url):
-            tag_data = self.tag_data(url)
-            # TODO: Store tag_data data to database
-
-            for img_tag in tag_data.get('img', []):
-                if is_image_url(img_tag['src']):
-                    self.images.add(img_tag['src'])
-
-            self.visited_urls.add(url)
-            for html_tag in tag_data.get('a', []):
-                hyperlink = html_tag.get('href', '')
-                if hyperlink not in self.visited_urls:
-                    self.crawl(hyperlink, depth + 1)
-
-        return list(self.images)
-
-    # def _crawl(self, url=None, depth=0):
+    # def crawl(self, url=None, depth=0):
     #     logger.debug('depth: {0}, self.depth: {1}'.format(depth, self.depth))
     #     if depth > self.depth:
-    #         return
+    #         return list(self.images)
 
     #     if url is None:
     #         url = self.url
@@ -216,11 +193,51 @@ class Crawler(object):
     #         for html_tag in tag_data.get('a', []):
     #             hyperlink = html_tag.get('href', '')
     #             if hyperlink not in self.visited_urls:
-    #                 self.href_queue.put((depth + 1, hyperlink))
-
-    # def crawl(self):
-    #     while not self.href_queue.empty():
-    #         depth, hyperlink = self.href_queue.get()
-    #         self._crawl(hyperlink, depth)
+    #                 self.crawl(hyperlink, depth + 1)
 
     #     return list(self.images)
+
+    def _crawl(self, page, url=None, depth=0):
+        logger.debug('depth: {0}, self.depth: {1}'.format(depth, self.depth))
+        if depth > self.depth:
+            return
+
+        if url is None:
+            url = self.url
+
+        if is_html_url(url):
+            tag_data = self.tag_data(url)
+            # TODO: Store tag_data data to database
+
+            for img_tag in tag_data.get('img', []):
+                if is_image_url(img_tag['src']):
+                    if (page - 1) * 20 <= self.image_count < page * 20:
+                        logger.debug('Found image #{0}'.format(self.image_count + 1))
+                        self.images.add(img_tag['src'])
+
+                    self.image_count += 1
+                    if self.image_count >= page * 20:
+                        return
+
+
+            self.visited_urls.add(url)
+            for html_tag in tag_data.get('a', []):
+                hyperlink = html_tag.get('href', '')
+                if hyperlink not in self.visited_urls:
+                    self.href_queue.put((depth + 1, hyperlink))
+
+    def page_not_complete(self, page):
+        if self.image_count >= page * 20:
+            return False
+
+        if (page - 1) * 20 > self.image_count >= page * 20:
+            return False
+
+        return True
+
+    def crawl(self, page):
+        while not self.href_queue.empty() and self.page_not_complete(page):
+            depth, hyperlink = self.href_queue.get()
+            self._crawl(page, hyperlink, depth)
+
+        return list(self.images)
