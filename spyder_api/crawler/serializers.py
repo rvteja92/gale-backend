@@ -45,6 +45,7 @@ class UrlRequestSerializer(serializers.Serializer):
         url = data['url']
 
         try:
+            logger.debug('Validating html type for url: {0}'.format(url))
             response = requests.head(url)
             content_type = response.headers['content-type']
             match = typeparser.match(content_type)
