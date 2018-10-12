@@ -92,9 +92,9 @@ DATABASES = {
 
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'spyder',
-        'USER': 'spyderuser',
-        'PASSWORD': 'spyderuser',
+        'NAME': 'galedb',
+        'USER': 'galeuser',
+        'PASSWORD': 'gale1992_spy',
         'HOST': 'localhost',
     }
 }
