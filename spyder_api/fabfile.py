@@ -92,7 +92,7 @@ def deploy_on_test():
             if SERVICES_TO_STOP:
                 sudo('systemctl stop %s' % ' '.join(SERVICES_TO_STOP))
 
-            # sudo('systemctl restart gunicorn')
+            sudo('systemctl restart spyder')
             # sudo('systemctl restart celeryd')
             # sudo('systemctl restart celeryworker')
 
