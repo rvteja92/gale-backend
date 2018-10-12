@@ -17,13 +17,7 @@ PROJECT_DIRECTORY = 'mcam'
 LOCAL_FILES_PATH = '/home/ravi/localfiles'
 REMOVE_OLD_DIRS = False
 
-APP_DIRECTORY = 'mcam'
-
 VENV_PATH = '/home/ravi/.virtualenvs/gale/bin/'
-
-SERVICES_TO_START = ['gunicorn', 'celeryd', 'celeryworker']
-
-SERVICES_TO_STOP = []
 
 PRODUCTION_MAIN_SERVER = '139.59.59.123'
 PRODUCTION_LOGIN_USERNAME = 'ravi'
@@ -67,7 +61,6 @@ def deploy_on_test():
             run('pip install -r spyder_api/requirements.txt')
 
         with cd(TEST_DEPLOY_PATH):
-            # run('pwd')
             today = datetime.datetime.now().strftime('%d%m%y')
             file_name = 'spyder_api' + today
             num = 1
@@ -81,20 +74,12 @@ def deploy_on_test():
                 run('pwd')
                 run('python manage.py migrate')
                 run('python manage.py collectstatic --noinput')
-                # run('python manage.py invalidate_cache')
 
             run('rm -f %s/spyder' % (TEST_DEPLOY_PATH))
             run('ln -s %s/%s-%d spyder' % (TEST_DEPLOY_PATH, file_name, num))
             sudo('chown -R %s:%s .' % (USER, USERGROUP))
             sudo('systemctl daemon-reload')
-            # if SERVICES_TO_START:
-            #     sudo('systemctl restart %s' % ' '.join(SERVICES_TO_START))
-            # if SERVICES_TO_STOP:
-            #     sudo('systemctl stop %s' % ' '.join(SERVICES_TO_STOP))
-
             sudo('systemctl restart spyder')
-            # sudo('systemctl restart celeryd')
-            # sudo('systemctl restart celeryworker')
 
             if REMOVE_OLD_DIRS:
                 print('REMOVING OLD DIRECTORIES')

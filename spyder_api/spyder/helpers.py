@@ -109,9 +109,6 @@ class TagExtractor(HTMLParser):
         }
         super(TagExtractor, self).__init__(*args, **kwargs)
 
-    # def feed(self, data):
-    #     return super().feed(data)
-
     def clean_attrs(self, attrs):
         attrs = dict(attrs)
         cleaned_attrs = {}
@@ -121,7 +118,6 @@ class TagExtractor(HTMLParser):
                 if normalized_url:
                     cleaned_attrs[key] = normalized_url
 
-        # attrs.update(cleaned_attrs)
         return cleaned_attrs
 
     def handle_starttag(self, tag, attrs):

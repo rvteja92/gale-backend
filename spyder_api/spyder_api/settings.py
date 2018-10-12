@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 import sys
 import raven
+import logging
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -202,6 +203,9 @@ CORS_ORIGIN_WHITELIST = (
     'app.onebag.in'
 )
 
+SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
+SENTRY_CELERY_LOGLEVEL = logging.INFO
+
 try:
     from .settings_local import *
 except ImportError:
@@ -217,3 +221,4 @@ if DEBUG:
             'level': 'DEBUG',
         },
     })
+    pass
