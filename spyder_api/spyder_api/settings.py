@@ -28,7 +28,7 @@ SECRET_KEY = '0^!^!o75e6w!=e-1uv6ms7=@+sxy&8ci@ql9&x0eu6=&nz=wm)'
 DEBUG = False
 
 ALLOWED_HOSTS = ['api.onebag.in']
-
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Application definition
 
