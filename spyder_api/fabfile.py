@@ -52,7 +52,7 @@ def deploy_on_test():
     REPO_PATH = '/home/ravi/devel/gale-backend'
     VENV_PATH = '/home/ravi/.virtualenvs/gale/bin'
     TEST_LOCAL_FILES_PATH = '/home/ravi/localfiles'
-    TEST_DEPLOY_PATH = '/home/ravi/deploy'
+    TEST_DEPLOY_PATH = '/home/ravi/deploy/spyder'
     USER = 'ravi'
     USERGROUP = 'ravi'
     APP_DIRECTORY = 'spyder_api'
@@ -81,16 +81,16 @@ def deploy_on_test():
                 run('pwd')
                 run('python manage.py migrate')
                 run('python manage.py collectstatic --noinput')
-                run('python manage.py invalidate_cache')
+                # run('python manage.py invalidate_cache')
 
-            run('rm %s/mcam' % (TEST_DEPLOY_PATH))
-            run('ln -s %s/%s-%d mcam' % (TEST_DEPLOY_PATH, file_name, num))
+            run('rm -f %s/spyder' % (TEST_DEPLOY_PATH))
+            run('ln -s %s/%s-%d spyder' % (TEST_DEPLOY_PATH, file_name, num))
             sudo('chown -R %s:%s .' % (USER, USERGROUP))
             sudo('systemctl daemon-reload')
-            if SERVICES_TO_START:
-                sudo('systemctl restart %s' % ' '.join(SERVICES_TO_START))
-            if SERVICES_TO_STOP:
-                sudo('systemctl stop %s' % ' '.join(SERVICES_TO_STOP))
+            # if SERVICES_TO_START:
+            #     sudo('systemctl restart %s' % ' '.join(SERVICES_TO_START))
+            # if SERVICES_TO_STOP:
+            #     sudo('systemctl stop %s' % ' '.join(SERVICES_TO_STOP))
 
             sudo('systemctl restart spyder')
             # sudo('systemctl restart celeryd')
@@ -98,7 +98,7 @@ def deploy_on_test():
 
             if REMOVE_OLD_DIRS:
                 print('REMOVING OLD DIRECTORIES')
-                sudo("ls --format 'single-column' -d */ | grep -v '^mcam/$\|^%s-%d/$' | xargs rm -rfv" % (
+                sudo("ls --format 'single-column' -d */ | grep -v '^spyder/$\|^%s-%d/$' | xargs rm -rfv" % (
                     file_name, num))
             else:
                 print('NOT REMOVING OLD DIRECTORIES')

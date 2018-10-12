@@ -16,6 +16,7 @@ django-redis-cache==1.7.1
 django-rest-framework==0.1.0
 djangorestframework==3.8.2
 Fabric3==1.14.post1
+gunicorn==19.9.0
 hiredis==0.2.0
 idna==2.7
 ipython==7.0.1
