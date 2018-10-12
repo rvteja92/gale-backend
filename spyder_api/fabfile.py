@@ -64,7 +64,7 @@ def deploy_on_test():
             run('git reset --hard origin/%s' % (DEVELOPMENT_BRANCH_NAME))
             run('git checkout %s' % (DEVELOPMENT_BRANCH_NAME))
             run('cp -f %s/* spyder_api/' % (TEST_LOCAL_FILES_PATH))
-            run('pip install -r requirements.txt')
+            run('pip install -r spyder_api/requirements.txt')
 
         with cd(TEST_DEPLOY_PATH):
             # run('pwd')
