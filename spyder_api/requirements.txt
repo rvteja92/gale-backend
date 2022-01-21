@@ -19,7 +19,7 @@ Fabric3==1.14.post1
 gunicorn==19.9.0
 hiredis==0.2.0
 idna==2.7
-ipython==7.0.1
+ipython==7.16.3
 ipython-genutils==0.2.0
 isort==4.3.4
 jedi==0.13.1
